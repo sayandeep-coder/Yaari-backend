@@ -1,305 +1,204 @@
-# Yaari Backend
+Yaari — Instagram-like Backend (NestJS monorepo)
 
-Instagram-like backend built with NestJS, organized as a monorepo with multiple apps and shared libraries.
+Production-ready Instagram-like backend built as a NestJS monorepo with microservices.
 
-## Stack
+Tech stack
 
-- **NestJS 10** for application framework
-- **Nest Microservices** for service-to-service communication
-- **Prisma 5** as the ORM (with `@prisma/client`)
-- **JWT + Passport** for authentication
-- **Redis** client (ioredis / redis) for caching/queues/rate-limits
-- **Cloudinary** SDK for media handling
+Framework: NestJS 10 (TypeScript, Node.js)
 
-## Requirements
+Architecture: Microservices
 
-- Node.js 18+ and npm
-- A database supported by Prisma (configure via environment)
-- Optional: Redis, Cloudinary (configure via environment)
+ORM: Prisma 5 (@prisma/client)
 
-## Monorepo Layout
+Database: PostgreSQL (e.g., Neon)
 
-- `apps/*` — application services (e.g., `api-gateway`, `auth-service`)
-- `libs/*` — shared libraries (DTOs, utilities, etc.)
+Auth: JWT + Passport
 
-## Setup
+Cache / queues / rate-limits: Redis (ioredis / node-redis)
 
-1. Install dependencies:
+Media: Cloudinary
 
-   ```bash
-   npm install
-   ```
+Node: 18+ and npm
 
-2. Configure environment variables:
-
-   - Create an `.env` file at the project root (and/or per app if needed).
-   - Provide database connection string for Prisma (e.g., `DATABASE_URL`).
-   - Provide any service-specific variables (e.g., JWT, Redis, Cloudinary) as required by your configuration.
-
-3. Generate Prisma client:
-
-   ```bash
-   npm run prisma:generate
-   ```
-
-4. Apply database migrations (development):
-
-   ```bash
-   npm run prisma:migrate
-   ```
-
-   For deploying migrations in non-dev environments:
-
-   ```bash
-   npm run prisma:deploy
-   ```
-
-## Scripts
-
-- `npm run start` — Start `api-gateway`
-- `npm run start:dev` — Start `api-gateway` with watch mode
-- `npm run start:debug` — Start `api-gateway` in debug + watch
-- `npm run start:prod` — Run compiled `api-gateway` from `dist`
-- `npm run start:auth` — Start `auth-service` in watch mode
-- `npm run build` — Build `api-gateway`
-- `npm run prisma:studio` — Open Prisma Studio
-
-## Development
-
-Typical flow:
-
-1. Ensure `.env` is configured.
-2. Generate client and run migrations:
-
-   ```bash
-   npm run prisma:generate
-   npm run prisma:migrate
-   ```
-
-3. Start services:
-
-   ```bash
-   npm run start:dev      # api-gateway
-   npm run start:auth     # auth-service
-   ```
-
-## Build & Run (Production)
-
-```bash
-npm run build
-npm run start:prod
-```
-
-Ensure environment variables are provided in production (process manager or container runtime).
-
-## Notes
-
-- This repository uses npm workspaces (`workspaces: ["apps/*", "libs/*"]`).
-- Service names referenced by scripts: `api-gateway`, `auth-service`.
-- Update Prisma schema and regenerate the client whenever models change.
-
-# YAARI - Instagram-like Backend
-
-Production-ready Instagram-like backend built with NestJS microservices architecture.
-
-## Tech Stack
-
-- **Framework**: NestJS (TypeScript, Node.js)
-- **Architecture**: Microservices
-- **Database**: PostgreSQL (Neon)
-- **Cache**: Redis
-- **Media Storage**: Cloudinary
-- **ORM**: Prisma
-
-## Microservices
-
-1. **API Gateway** (Port 3000) - Main entry point, rate limiting
-2. **Auth Service** (Port 3001) - Authentication, JWT, sessions
-3. **User Service** (Port 3002) - Profiles, follows
-4. **Post Service** (Port 3003) - Posts, comments, likes
-5. **Story Service** (Port 3004) - Stories, views
-6. **Message Service** (Port 3005) - DMs, conversations
-7. **Notification Service** (Port 3006) - Real-time notifications
-8. **Search Service** (Port 3007) - Users, hashtags, posts
-
-## Setup Instructions
-
-### 1. Install Dependencies
-
-```bash
-npm install
-```
-
-### 2. Environment Variables
-
-The `.env` file is already configured with:
-- Neon PostgreSQL database
-- Redis Cloud instance
-- Cloudinary credentials
-- JWT secrets
-
-### 3. Generate Prisma Client
-
-```bash
-npx prisma generate
-```
-
-### 4. Run Database Migrations
-
-```bash
-npx prisma migrate deploy
-```
-
-Or create a new migration:
-
-```bash
-npx prisma migrate dev --name init
-```
-
-### 5. Start Services
-
-**Development (all services):**
-```bash
-npm run start:dev
-```
-
-**Production:**
-```bash
-npm run build
-npm run start:prod
-```
-
-## API Endpoints
-
-### Authentication (`/auth`)
-- `POST /auth/register` - Register new user
-- `POST /auth/login` - Login user
-- `POST /auth/logout` - Logout user
-- `GET /auth/me` - Get current user
-
-### Users (`/users`)
-- `GET /users/:username` - Get user profile
-- `PATCH /users/me` - Update profile
-- `GET /users/:username/followers` - Get followers
-- `GET /users/:username/following` - Get following
-- `POST /users/:username/follow` - Follow user
-- `DELETE /users/:username/follow` - Unfollow user
-
-### Posts (`/posts`)
-- `GET /feed` - Get home feed
-- `GET /posts/:id` - Get post details
-- `POST /posts` - Create post
-- `DELETE /posts/:id` - Delete post
-- `POST /posts/:id/like` - Like post
-- `DELETE /posts/:id/like` - Unlike post
-- `GET /posts/:id/comments` - Get comments
-- `POST /posts/:id/comments` - Add comment
-
-### Stories (`/stories`)
-- `GET /stories/home` - Get stories feed
-- `POST /stories` - Create story
-- `POST /stories/:id/view` - Mark story as viewed
-
-### Messages (`/messages`)
-- `GET /conversations` - Get all conversations
-- `POST /conversations` - Create conversation
-- `GET /conversations/:id/messages` - Get messages
-- `POST /conversations/:id/messages` - Send message
-
-### Notifications (`/notifications`)
-- `GET /notifications` - Get notifications
-- `POST /notifications/:id/read` - Mark as read
-
-### Search (`/search`)
-- `GET /search?q=query` - Search users, hashtags, posts
-
-## Database Schema
-
-The Prisma schema includes:
-- Users (with auth, profiles)
-- Posts (with media, carousel support)
-- Comments (with nested replies)
-- Likes (posts, comments)
-- Follows (with pending/accepted status)
-- Stories (24h expiry)
-- Messages (DMs, group chats)
-- Notifications
-- Collections (saved posts)
-- Hashtags
-
-## Features
-
-✅ Secure authentication (JWT + Redis sessions)
-✅ User profiles with privacy settings
-✅ Posts with multiple media (images/videos)
-✅ Comments with nested replies
-✅ Likes on posts and comments
-✅ Follow system (public/private accounts)
-✅ Stories with 24h expiry
-✅ Direct messaging
-✅ Real-time notifications
-✅ Hashtag system
-✅ Search functionality
-✅ Collections (saved posts)
-✅ Rate limiting
-✅ Input validation
-✅ Error handling
-✅ Pagination (cursor-based)
-✅ Cloudinary media uploads
-
-## Project Structure
-
-```
+High-level repo layout
 yaari-backend/
 ├── apps/
 │   ├── api-gateway/          # Main API Gateway
-│   ├── auth-service/          # Authentication
-│   ├── user-service/          # User management
-│   ├── post-service/          # Posts & comments
-│   ├── story-service/         # Stories
-│   ├── message-service/       # Messaging
-│   ├── notification-service/  # Notifications
-│   └── search-service/        # Search
+│   ├── auth-service/         # Authentication
+│   ├── user-service/         # User management
+│   ├── post-service/         # Posts & comments
+│   ├── story-service/        # Stories
+│   ├── message-service/      # Messaging (DMs)
+│   ├── notification-service/ # Notifications (real-time)
+│   └── search-service/       # Search (users, hashtags, posts)
 ├── libs/
-│   ├── common/                # Shared utilities
-│   ├── prisma/                # Database client
-│   └── redis/                 # Redis client
+│   ├── common/               # Shared utilities, guards, filters
+│   ├── prisma/               # Shared Prisma client wrapper
+│   └── redis/                # Shared Redis client wrapper
 ├── prisma/
-│   └── schema.prisma          # Database schema
-└── .env                       # Environment variables
-```
+│   └── schema.prisma         # Prisma schema
+└── .env                      # Environment variables (per-app overrides possible)
 
-## Development
+Microservices & default ports
 
-### View Database
-```bash
+API Gateway — 3000
+
+Auth Service — 3001
+
+User Service — 3002
+
+Post Service — 3003
+
+Story Service — 3004
+
+Message Service — 3005
+
+Notification Service — 3006
+
+Search Service — 3007
+
+Ports are configurable via per-app .env files — these are defaults used for development.
+
+Features
+
+Secure authentication (JWT + Redis sessions)
+
+User profiles with privacy settings (public / private)
+
+Posts with multiple media (images & videos, carousel support)
+
+Comments with nested replies
+
+Likes (posts & comments)
+
+Follow system (public/private, pending/accepted)
+
+Stories with 24-hour expiry
+
+Direct messages (DMs) and group chats
+
+Real-time notifications
+
+Hashtag system
+
+Search (users, hashtags, posts)
+
+Collections (saved posts)
+
+Rate limiting at API Gateway level
+
+Input validation and centralized error handling
+
+Cursor-based pagination (infinite scroll)
+
+Soft deletes for important resources
+
+Cloudinary for media storage
+
+Prisma as single source of DB schema
+
+Redis for sessions, caching, queues
+
+Requirements
+
+Node.js 18+
+
+npm
+
+A Prisma-supported database (Postgres recommended — Neon example)
+
+Optional: Redis, Cloudinary (configure via env)
+
+Setup
+
+Clone repo and install dependencies (root workspace):
+
+npm install
+
+
+Create .env at project root and/or per-app .env files. Required environment variables typically include:
+
+DATABASE_URL — PostgreSQL connection string (used by Prisma)
+
+JWT_SECRET, JWT_EXPIRES_IN (e.g., 7d)
+
+REDIS_URL (or host/port)
+
+Cloudinary credentials (if using cloud uploads)
+
+Any service-specific variables (ports, microservice names, etc.)
+
+Generate Prisma client:
+
+npx prisma generate
+
+
+Create / apply migrations (dev):
+
+npx prisma migrate dev --name init
+
+
+Or deploy migrations in non-dev environments:
+
+npx prisma migrate deploy
+
+
+(Optional) Open Prisma Studio:
+
 npx prisma studio
-```
 
-### Reset Database
-```bash
-npx prisma migrate reset
-```
+Scripts (commonly available)
 
-### Generate Migration
-```bash
-npx prisma migrate dev --name your_migration_name
-```
+npm run start — Start api-gateway (production/local default)
 
-## Production Deployment
+npm run start:dev — Start api-gateway in watch/dev mode
 
-1. Set environment variables
-2. Run `npm run build`
-3. Run `npx prisma migrate deploy`
-4. Run `npm run start:prod`
+npm run start:debug — Start api-gateway in debug + watch
 
-## Notes
+npm run start:prod — Run compiled api-gateway from dist
 
-- All passwords are hashed with bcrypt
-- JWT tokens expire in 7 days
-- Sessions are stored in Redis for fast validation
-- Media files are uploaded to Cloudinary
-- Rate limiting is applied at API Gateway level
-- All endpoints (except auth) require authentication
-- Cursor-based pagination for infinite scroll
-- Soft deletes for important data
+npm run start:auth — Start auth-service in watch mode
+
+npm run build — Build api-gateway
+
+npm run prisma:generate — npx prisma generate
+
+npm run prisma:migrate — convenience for migrations (npx prisma migrate ...)
+
+npm run prisma:studio — npx prisma studio
+
+Exact script names may vary per repository; check package.json at root and within apps/* for service-specific scripts.
+
+Development flow
+
+Ensure .env is configured for services you want to run.
+
+Generate Prisma client and run migrations:
+
+npx prisma generate
+npx prisma migrate dev --name init
+
+
+Run services in development (example):
+
+npm run start:dev      # start API gateway in dev/watch
+npm run start:auth     # start auth-service
+# start other services similarly or use a dev script that starts all
+
+Build & Run (Production)
+
+Build:
+
+npm run build
+
+
+Apply migrations (deploy):
+
+npx prisma migrate deploy
+
+
+Start production services:
+
+npm run start:prod
+
+
