@@ -1,0 +1,74 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+
+# Build output
+dist/
+.tmp/
+.temp/
+.cache/
+.ncc/
+
+# Env / secrets
+
+.env.*
+!.env.example
+.env
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Coverage / reports
+coverage/
+.nyc_output/
+*.lcov
+
+# Prisma
+prisma/*.db
+prisma/*.db-journal
+prisma/migrations/.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Misc
+*.local
+
+# Normalize text files to LF in repo; convert to native on checkout if configured
+* text=auto
+
+# Force LF for source files
+*.js  text eol=lf
+*.ts  text eol=lf
+*.tsx text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+*.md  text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sql text eol=lf
+*.sh  text eol=lf
+*.prisma text eol=lf
+
+# Keep images/binaries untouched
+*.png -text
+*.jpg -text
+*.jpeg -text
+*.gif -text
+*.ico -text
+*.pdf -text
+*.zip -text
+
+# Windows scripts keep CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
