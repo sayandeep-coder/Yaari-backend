@@ -1,4 +1,4 @@
-# YAARI - Instagram-like Backend
+# YAARI - Instagram-like Backend.
 
 Production-ready Instagram-like backend built with NestJS microservices architecture.
 
